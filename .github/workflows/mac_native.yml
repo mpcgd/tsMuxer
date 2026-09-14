@@ -1,4 +1,4 @@
-name: Build for Mac Native
+name: Build for Mac Apple
 
 on:
   push:

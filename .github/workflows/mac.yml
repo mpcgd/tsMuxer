@@ -9,25 +9,20 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
-    
-    container:
-      image: docker://justdan96/tsmuxer_build:latest
-      volumes:
-      - /workspace:/github/workspace
+    runs-on: macos-15-intel
     
     steps:
     - uses: actions/checkout@master
       name: checkout
       
-    - run: rm -f bin/.gitkeep
-      name: clean-bin-folder
+    - run: brew install qt@5
+      name: Install Qt5 via Homebrew
       
-    - run: ./scripts/rebuild_osxcross_docker.sh
-      name: build-for-mac-intel-cli
-      
+    - run: export PATH="/opt/homebrew/opt/qt@5/bin:$PATH" && ./scripts/build_macos_native.sh && mv build/bin/mac_arm64.zip build/bin/mac_intel.zip
+      name: build-for-mac-intel
+
     - uses: actions/upload-artifact@master
       with:
          name: tsMuxer_mac_intel
-         path: bin
+         path: build/bin/mac_intel.zip
       name: upload-artefact

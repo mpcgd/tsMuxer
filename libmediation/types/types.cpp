@@ -114,7 +114,8 @@ std::string normalizeDecimalSeparator(const char* const str)
     std::string normalized(str);
     for (size_t i = 0; i < normalized.size(); ++i)
     {
-        if (normalized[i] == ',' && i > 0 && i + 1 < normalized.size() && isdigit(static_cast<unsigned char>(normalized[i - 1])) &&
+        if (normalized[i] == ',' && i > 0 && i + 1 < normalized.size() &&
+            isdigit(static_cast<unsigned char>(normalized[i - 1])) &&
             isdigit(static_cast<unsigned char>(normalized[i + 1])))
         {
             normalized[i] = '.';

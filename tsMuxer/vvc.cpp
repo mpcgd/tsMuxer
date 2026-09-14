@@ -407,8 +407,11 @@ int VvcVpsUnit::deserialize()
             }
             if (m_reader.getBit())  // vps_timing_hrd_params_present_flag
             {
+                num_units_in_tick_bit_pos = m_reader.getBitsCount();
                 if (general_timing_hrd_parameters(m_vps_hrd))
                     return 1;
+                num_units_in_tick = m_vps_hrd.num_units_in_tick;
+                time_scale = m_vps_hrd.time_scale;
                 bool vps_sublayer_cpb_params_present_flag = (vps_max_sublayers > 1) ? m_reader.getBit() : false;
                 unsigned vps_num_ols_timing_hrd_params = extractUEGolombCode() + 1;
                 if (vps_num_ols_timing_hrd_params > NumMultiLayerOlss)
@@ -447,7 +450,8 @@ void VvcVpsUnit::setFPS(const double fps)
     num_units_in_tick = lround(time_scale / fps);
 
     // num_units_in_tick = time_scale/2 / fps;
-    assert(num_units_in_tick_bit_pos > 0);
+    if (num_units_in_tick_bit_pos <= 0)
+        THROW_BITSTREAM_ERR;
     updateBits(num_units_in_tick_bit_pos, 32, num_units_in_tick);
     updateBits(num_units_in_tick_bit_pos + 32, 32, time_scale);
 }

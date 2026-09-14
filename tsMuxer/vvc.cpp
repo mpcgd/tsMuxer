@@ -59,7 +59,7 @@ int VvcUnit::deserialize()
     }
 }
 
-void VvcUnit::updateBits(const int bitOffset, const int bitLen, const int value) const
+void VvcUnit::updateBits(const int bitOffset, const int bitLen, const unsigned value) const
 {
     uint8_t* ptr = m_reader.getBuffer() + bitOffset / 8;
     const uint8_t* bufEnd = m_reader.getBuffer() + m_nalBufferLen;
@@ -457,7 +457,7 @@ void VvcVpsUnit::setFPS(const double fps)
     num_units_in_tick = lround(time_scale / fps);
 
     // num_units_in_tick = time_scale/2 / fps;
-    if (num_units_in_tick_bit_pos <= 0)
+    if (num_units_in_tick_bit_pos < 0)
         THROW_BITSTREAM_ERR;
     updateBits(num_units_in_tick_bit_pos, 32, num_units_in_tick);
     updateBits(num_units_in_tick_bit_pos + 32, 32, time_scale);

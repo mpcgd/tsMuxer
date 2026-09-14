@@ -38,9 +38,18 @@ int decode012(BitStreamReader& bitReader)
 void VC1Unit::updateBits(const int bitOffset, const int bitLen, const int value) const
 {
     uint8_t* ptr = bitReader.getBuffer() + bitOffset / 8;
-    BitStreamWriter bitWriter{};
+    // Physical end of the NAL allocation.
+    const uint8_t* bufEnd = m_nalBuffer + m_nalBufferLen;
     const int byteOffset = bitOffset % 8;
-    bitWriter.setBuffer(ptr, ptr + (bitLen / 8 + 5));
+    // Last byte touched by the write: ceil((bitOffset + bitLen) / 8)
+    const int writeEnd = (bitOffset + bitLen + 7) / 8;
+
+    // Bounds check: ensure the write region stays inside the NAL allocation.
+    if (bitOffset < 0 || bitReader.getBuffer() < m_nalBuffer || ptr >= bufEnd || ptr + writeEnd > bufEnd)
+        THROW_BITSTREAM_ERR;
+
+    BitStreamWriter bitWriter{};
+    bitWriter.setBuffer(ptr, bufEnd);
 
     const uint8_t* ptr_end = bitReader.getBuffer() + (bitOffset + bitLen) / 8;
     const int endBitsPostfix = 8 - ((bitOffset + bitLen) % 8);

@@ -62,9 +62,16 @@ int VvcUnit::deserialize()
 void VvcUnit::updateBits(const int bitOffset, const int bitLen, const int value) const
 {
     uint8_t* ptr = m_reader.getBuffer() + bitOffset / 8;
-    BitStreamWriter bitWriter{};
+    const uint8_t* bufEnd = m_reader.getBuffer() + m_nalBufferLen;
     const int byteOffset = bitOffset % 8;
-    bitWriter.setBuffer(ptr, ptr + (bitLen / 8 + 5));
+    const int writeEnd = (bitOffset + bitLen) / 8 + 1;
+
+    // Bounds check: ensure we don't write past the NAL buffer
+    if (writeEnd > m_nalBufferLen || ptr < m_reader.getBuffer() || ptr >= bufEnd)
+        THROW_BITSTREAM_ERR;
+
+    BitStreamWriter bitWriter{};
+    bitWriter.setBuffer(ptr, bufEnd);
 
     const uint8_t* ptr_end = m_reader.getBuffer() + (bitOffset + bitLen) / 8;
     const int endBitsPostfix = 8 - ((bitOffset + bitLen) % 8);

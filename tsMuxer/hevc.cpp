@@ -231,7 +231,8 @@ void HevcVpsUnit::setFPS(const double fps)
     time_scale = lround(fps) * 1000000;
     num_units_in_tick = lround(time_scale / fps);
 
-    assert(num_units_in_tick_bit_pos > 0);
+    if (num_units_in_tick_bit_pos <= 0)
+        THROW_BITSTREAM_ERR;
     updateBits(num_units_in_tick_bit_pos, 32, num_units_in_tick);
     updateBits(num_units_in_tick_bit_pos + 32, 32, time_scale);
 }

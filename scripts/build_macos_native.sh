@@ -12,7 +12,7 @@ if ! qtver=$(qmake -query QT_VERSION | cut -d'.' -f1); then
   qtver=5
 fi
 
-mkdir build
+mkdir -p build
 
 pushd build
 cmake -DCMAKE_BUILD_TYPE=Release -DTSMUXER_STATIC_BUILD=TRUE \
@@ -36,7 +36,7 @@ popd
 macdeployqt tsMuxerGUI.app
 popd
 
-mkdir bin
+mkdir -p bin
 pushd bin
 mv ../tsMuxer/tsmuxer tsMuxeR
 mv ../tsMuxerGUI/tsMuxerGUI.app .

@@ -5,6 +5,7 @@
 #include <ostream>
 #include <regex>
 #include <sstream>
+#include <string>
 
 #ifndef _WIN32
 #include <arpa/inet.h>
@@ -97,9 +98,37 @@ int8_t strToInt8(const char* const str) { return static_cast<int8_t>(strtol(str,
 
 uint8_t strToInt8u(const char* const str) { return static_cast<uint8_t>(strtol(str, nullptr, 10)); }
 
-double strToDouble(const char* const str) { return strtod(str, nullptr); }
+double strToDouble(const char* const str)
+{
+    // Normalize comma decimal separator to period for locale-independent parsing.
+    // This handles meta files created in locales where comma is the decimal separator
+    // (e.g. fps=29,97 should be parsed as fps=29.97).
+    // See https://github.com/justdan96/tsMuxer/issues/505
+    std::string normalized(str);
+    for (char& c : normalized)
+    {
+        if (c == ',')
+        {
+            c = '.';
+            break;  // only replace the first comma (assumed decimal separator)
+        }
+    }
+    return strtod(normalized.c_str(), nullptr);
+}
 
-float strToFloat(const char* const str) { return strtof(str, nullptr); }
+float strToFloat(const char* const str)
+{
+    std::string normalized(str);
+    for (char& c : normalized)
+    {
+        if (c == ',')
+        {
+            c = '.';
+            break;
+        }
+    }
+    return strtof(normalized.c_str(), nullptr);
+}
 
 bool strToBool(const char* const str)
 {

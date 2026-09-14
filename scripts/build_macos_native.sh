@@ -41,6 +41,6 @@ pushd bin
 mv ../tsMuxer/tsmuxer tsMuxeR
 mv ../tsMuxerGUI/tsMuxerGUI.app .
 cp tsMuxeR tsMuxerGUI.app/Contents/MacOS/
-zip -9 -r mac.zip tsMuxeR tsMuxerGUI.app
+zip -9 -r mac_arm64.zip tsMuxeR tsMuxerGUI.app
 popd
 popd

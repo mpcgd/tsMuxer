@@ -26,6 +26,6 @@ jobs:
 
     - uses: actions/upload-artifact@master
       with:
-         name: tsMuxer
-         path: build/bin/mac.zip
+         name: tsMuxer_mac_arm64
+         path: build/bin/mac_arm64.zip
       name: upload-artefact

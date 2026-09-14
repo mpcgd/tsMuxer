@@ -74,10 +74,10 @@ jobs:
     - run: ./scripts/rebuild_mxe32_with_gui_docker.sh
       name: build-for-win32
 
-    - run: ./scripts/rebuild_osxcross_with_gui_docker.sh
-      name: build-for-mac-intel
+    - run: ./scripts/rebuild_osxcross_docker.sh
+      name: build-for-mac-intel-cli
 
-    - run: cd bin && zip -9 -r mac_intel.zip tsMuxeR tsMuxerGUI.app
+    - run: cd bin && zip -9 -r mac_intel.zip tsMuxeR
       name: zip-mac-intel
 
     - name: Upload Win32/Win64/Linux/Intel-Mac Builds
@@ -103,13 +103,10 @@ jobs:
     - uses: actions/checkout@v2
       name: checkout
     
-    - name: Install Qt
-      uses: jurplel/install-qt-action@v2
-      with:
-        setup-python: false
-        py7zrversion: '==0.20.*'
+    - run: brew install qt@5
+      name: Install Qt5 via Homebrew
       
-    - run: ./scripts/build_macos_native.sh
+    - run: export PATH="/opt/homebrew/opt/qt@5/bin:$PATH" && ./scripts/build_macos_native.sh
       name: build-for-mac-arm64
     
     - name: Upload Mac ARM64 Build

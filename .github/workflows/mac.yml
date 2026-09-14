@@ -18,7 +18,7 @@ jobs:
     - run: brew install qt@5
       name: Install Qt5 via Homebrew
       
-    - run: export PATH="/opt/homebrew/opt/qt@5/bin:$PATH" && ./scripts/build_macos_native.sh && mv build/bin/mac_arm64.zip build/bin/mac_intel.zip
+    - run: export PATH="$(brew --prefix qt@5)/bin:$PATH" && ./scripts/build_macos_native.sh && mv build/bin/mac_arm64.zip build/bin/mac_intel.zip
       name: build-for-mac-intel
     - uses: actions/upload-artifact@master
       with:

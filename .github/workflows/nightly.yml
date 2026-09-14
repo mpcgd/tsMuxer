@@ -74,13 +74,7 @@ jobs:
     - run: ./scripts/rebuild_mxe32_with_gui_docker.sh
       name: build-for-win32
 
-    - run: ./scripts/rebuild_osxcross_docker.sh
-      name: build-for-mac-intel-cli
-
-    - run: cd bin && zip -9 -r mac_intel.zip tsMuxeR
-      name: zip-mac-intel
-
-    - name: Upload Win32/Win64/Linux/Intel-Mac Builds
+    - name: Upload Win32/Win64/Linux Builds
       id: upload-builds
       uses: justdan96/release-action@main
       with:
@@ -110,11 +104,40 @@ jobs:
       name: build-for-mac-arm64
     
     - name: Upload Mac ARM64 Build
-      id: upload-mac
+      id: upload-mac-arm64
       uses: justdan96/release-action@main
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         artifacts: ./build/bin/mac_arm64.zip
+        tag: nightly-${{ needs.check.outputs.version }}
+        allowUpdates: true
+        omitPrereleaseDuringUpdate: true
+        omitNameDuringUpdate: true
+        omitBodyDuringUpdate: true
+
+  build-macos-intel:
+  
+    needs: check
+    if: needs.check.outputs.status == 0
+    
+    runs-on: macos-15-intel
+    
+    steps:
+    - uses: actions/checkout@v2
+      name: checkout
+    
+    - run: brew install qt@5
+      name: Install Qt5 via Homebrew
+      
+    - run: export PATH="/opt/homebrew/opt/qt@5/bin:$PATH" && ./scripts/build_macos_native.sh && mv build/bin/mac_arm64.zip build/bin/mac_intel.zip
+      name: build-for-mac-intel
+    
+    - name: Upload Mac Intel Build
+      id: upload-mac-intel
+      uses: justdan96/release-action@main
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        artifacts: ./build/bin/mac_intel.zip
         tag: nightly-${{ needs.check.outputs.version }}
         allowUpdates: true
         omitPrereleaseDuringUpdate: true

@@ -1,5 +1,6 @@
 #include "types.h"
 
+#include <cctype>
 #include <cstring>
 #include <iomanip>
 #include <ostream>
@@ -98,35 +99,41 @@ int8_t strToInt8(const char* const str) { return static_cast<int8_t>(strtol(str,
 
 uint8_t strToInt8u(const char* const str) { return static_cast<uint8_t>(strtol(str, nullptr, 10)); }
 
-double strToDouble(const char* const str)
+namespace
 {
-    // Normalize comma decimal separator to period for locale-independent parsing.
-    // This handles meta files created in locales where comma is the decimal separator
-    // (e.g. fps=29,97 should be parsed as fps=29.97).
-    // See https://github.com/justdan96/tsMuxer/issues/505
+// Normalize a comma decimal separator to a period for locale-independent parsing.
+// This handles meta files created in locales where comma is the decimal separator
+// (e.g. fps=29,97 should be parsed as fps=29.97).
+// See https://github.com/justdan96/tsMuxer/issues/505
+//
+// Only the first comma that is a genuine decimal separator (a digit on both sides)
+// is replaced; commas used as thousands separators (e.g. "1,234") are left intact,
+// and values like "24000/1001" keep their slash form.
+std::string normalizeDecimalSeparator(const char* const str)
+{
     std::string normalized(str);
-    for (char& c : normalized)
+    for (size_t i = 0; i < normalized.size(); ++i)
     {
-        if (c == ',')
+        if (normalized[i] == ',' && i > 0 && i + 1 < normalized.size() && isdigit(static_cast<unsigned char>(normalized[i - 1])) &&
+            isdigit(static_cast<unsigned char>(normalized[i + 1])))
         {
-            c = '.';
-            break;  // only replace the first comma (assumed decimal separator)
+            normalized[i] = '.';
+            break;
         }
     }
+    return normalized;
+}
+}  // namespace
+
+double strToDouble(const char* const str)
+{
+    const std::string normalized = normalizeDecimalSeparator(str);
     return strtod(normalized.c_str(), nullptr);
 }
 
 float strToFloat(const char* const str)
 {
-    std::string normalized(str);
-    for (char& c : normalized)
-    {
-        if (c == ',')
-        {
-            c = '.';
-            break;
-        }
-    }
+    const std::string normalized = normalizeDecimalSeparator(str);
     return strtof(normalized.c_str(), nullptr);
 }
 

@@ -74,7 +74,13 @@ jobs:
     - run: ./scripts/rebuild_mxe32_with_gui_docker.sh
       name: build-for-win32
 
-    - name: Upload Win32/Win64/Linux Builds
+    - run: ./scripts/rebuild_osxcross_with_gui_docker.sh
+      name: build-for-mac-intel
+
+    - run: cd bin && zip -9 -r mac_intel.zip tsMuxeR tsMuxerGUI.app
+      name: zip-mac-intel
+
+    - name: Upload Win32/Win64/Linux/Intel-Mac Builds
       id: upload-builds
       uses: justdan96/release-action@main
       with:
@@ -104,14 +110,14 @@ jobs:
         py7zrversion: '==0.20.*'
       
     - run: ./scripts/build_macos_native.sh
-      name: build-for-mac
+      name: build-for-mac-arm64
     
-    - name: Upload Mac Build
+    - name: Upload Mac ARM64 Build
       id: upload-mac
       uses: justdan96/release-action@main
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        artifacts: ./build/bin/mac.zip
+        artifacts: ./build/bin/mac_arm64.zip
         tag: nightly-${{ needs.check.outputs.version }}
         allowUpdates: true
         omitPrereleaseDuringUpdate: true

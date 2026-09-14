@@ -3,6 +3,8 @@ name: Build for Mac
 on:
   push:
     branches: [master]
+  pull_request:
+    branches: [master]
 
 jobs:
   build:
@@ -21,11 +23,11 @@ jobs:
     - run: rm -f bin/.gitkeep
       name: clean-bin-folder
       
-    - run: ./scripts/rebuild_osxcross_docker.sh
-      name: build-for-mac
+    - run: ./scripts/rebuild_osxcross_with_gui_docker.sh
+      name: build-for-mac-intel
       
     - uses: actions/upload-artifact@master
       with:
-         name: tsMuxer
+         name: tsMuxer_mac_intel
          path: bin
       name: upload-artefact

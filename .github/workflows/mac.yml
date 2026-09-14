@@ -23,8 +23,8 @@ jobs:
     - run: rm -f bin/.gitkeep
       name: clean-bin-folder
       
-    - run: ./scripts/rebuild_osxcross_with_gui_docker.sh
-      name: build-for-mac-intel
+    - run: ./scripts/rebuild_osxcross_docker.sh
+      name: build-for-mac-intel-cli
       
     - uses: actions/upload-artifact@master
       with:

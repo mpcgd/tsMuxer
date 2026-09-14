@@ -1,4 +1,4 @@
-name: Build For Mac Intel
+name: Build for Mac Intel
 
 on:
   push:

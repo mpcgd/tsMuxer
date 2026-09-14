@@ -59,12 +59,13 @@ int VvcUnit::deserialize()
     }
 }
 
-void VvcUnit::updateBits(const int bitOffset, const int bitLen, const int value) const
+void VvcUnit::updateBits(const int bitOffset, const int bitLen, const unsigned value) const
 {
     uint8_t* ptr = m_reader.getBuffer() + bitOffset / 8;
     const uint8_t* bufEnd = m_reader.getBuffer() + m_nalBufferLen;
     const int byteOffset = bitOffset % 8;
-    const int writeEnd = (bitOffset + bitLen) / 8 + 1;
+    // Last byte touched by the write: ceil((bitOffset + bitLen) / 8)
+    const int writeEnd = (bitOffset + bitLen + 7) / 8;
 
     // Bounds check: ensure we don't write past the NAL buffer
     if (writeEnd > m_nalBufferLen || ptr < m_reader.getBuffer() || ptr >= bufEnd)

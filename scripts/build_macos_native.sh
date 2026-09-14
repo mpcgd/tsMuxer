@@ -17,7 +17,7 @@ mkdir build
 pushd build
 cmake -DCMAKE_BUILD_TYPE=Release -DTSMUXER_STATIC_BUILD=TRUE \
   "-DFREETYPE_LDFLAGS=bz2;$(brew --prefix)/lib/libpng.a" -DTSMUXER_GUI=TRUE \
-  -DWITHOUT_PKGCONFIG=TRUE -DQT_VERSION=$qtver ..
+  -DWITHOUT_PKGCONFIG=TRUE -DQT_VERSION=$qtver ../..
 
 if ! num_cores=$(sysctl -n hw.logicalcpu); then
   num_cores=1

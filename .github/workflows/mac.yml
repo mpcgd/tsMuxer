@@ -5,10 +5,10 @@ on:
   # attaches are how a tester gets a build without a release existing.
   workflow_dispatch:
   push:
-    branches: [master]
+    branches: [main]
     tags: ["v*"]
   pull_request:
-    branches: [master]
+    branches: [main]
 
 permissions:
   contents: write

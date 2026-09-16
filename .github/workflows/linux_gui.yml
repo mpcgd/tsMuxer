@@ -2,14 +2,14 @@ name: Build GUI for Linux
 
 on:
   push:
-    branches: [master]
+    branches: [main]
     paths:
     - 'tsMuxerGUI/**'
     - 'tsMuxer/**'
     - 'libmediation/**'
     - 'CMakeLists.txt'
   pull_request:
-    branches: [master]
+    branches: [main]
     paths:
     - 'tsMuxerGUI/**'
     - 'tsMuxer/**'

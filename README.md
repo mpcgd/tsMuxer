@@ -1,6 +1,6 @@
 # tsMuxer
 
-> **Note:** This is a fork of [jaminmc/tsMuxer](https://github.com/jaminmc/tsMuxer) (itself a modernized C++20/Qt6 fork of [justdan96/tsMuxer](https://github.com/justdan96/tsMuxer)). It adds multi-layer disc authoring: a menu-preserving BDMV to ISO mode, a layer-break guard band for BD-R/RE DL and BD-R XL media, a fit-to-disc capacity guard, and a layer-break calculator in the GUI. See [DISC_AUTHORING.md](docs/DISC_AUTHORING.md) (also available [auf Deutsch](docs/DISC_AUTHORING_DE.md) and [日本語で](docs/DISC_AUTHORING_JA.md)).
+> **Note:** This is a fork of [teaching-droid/tsMuxer](https://github.com/teaching-droid/tsMuxer), the active successor to [justdan96/tsMuxer](https://github.com/justdan96/tsMuxer). This fork adds locale-independent decimal-separator handling and macOS CI fixes on top of teaching-droid's multi-layer disc authoring, menu-preserving BDMV to ISO mode, layer-break guard, fit-to-disc capacity guard, and GUI layer-break calculator. See [DISC_AUTHORING.md](docs/DISC_AUTHORING.md) (also available [auf Deutsch](docs/DISC_AUTHORING_DE.md) and [日本語で](docs/DISC_AUTHORING_JA.md)).
 
 ## Vision
 

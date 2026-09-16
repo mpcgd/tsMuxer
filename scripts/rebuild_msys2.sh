@@ -9,7 +9,7 @@ if [ "$MSYSTEM" == "MSYS" ]; then
     zlib-devel \
     git
   if [ ! -d tsmuxer ]; then
-    git clone https://github.com/jaminmc/tsMuxer.git
+    git clone https://github.com/teaching-droid/tsMuxer.git
   fi
 else
   cd tsmuxer || exit

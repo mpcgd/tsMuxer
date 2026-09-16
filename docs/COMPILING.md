@@ -21,11 +21,11 @@ Windows (native) section below.
 
 ## Docker (Linux build)
 
-You can use the [Docker container](https://github.com/jaminmc/tsmuxer_build) to build the Linux
+You can use the [Docker container](https://github.com/teaching-droid/tsmuxer_build) to build the Linux
 binaries. Browse to the tsMuxer repository and run:
 
 ```
-docker run -it --rm -v $(pwd):/workdir -w="/workdir" jaminmc/tsmuxer_build bash -c ". scripts/rebuild_linux_with_gui_docker.sh"
+docker run -it --rm -v $(pwd):/workdir -w="/workdir" teaching-droid/tsmuxer_build bash -c ". scripts/rebuild_linux_with_gui_docker.sh"
 ```
 
 The executables will be saved to the "bin" folder. Windows and Mac builds do not use Docker in

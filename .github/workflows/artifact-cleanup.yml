@@ -9,19 +9,55 @@ on:
 jobs:
   cleanup:
     runs-on: ubuntu-latest
-    
+    permissions:
+      actions: write
+
     steps:
-    # Left on v2 on purpose. v5 and v6 dropped the minCreatedAt input, so on any newer version
-    # this step would delete EVERY artifact each night rather than the ones over 30 days old,
-    # including a release build nobody has downloaded yet. v2 runs on an old Node and will
-    # stop working eventually; when it does, the answer is GitHub's own retention setting
-    # rather than a newer version of this action.
+    # Deletes artifacts via the REST API rather than a third-party action.
+    # geekyeggo/delete-artifact has no minCreatedAt input in ANY version and its
+    # older versions talk to the run-runtime endpoint, which fails on scheduled
+    # runs ("Failed to load artifacts"). The REST API below lists all repo
+    # artifacts, keeps the last 30 days, and deletes the rest.
     - name: Delete artifacts older than 30 days
-      uses: geekyeggo/delete-artifact@v2
+      uses: actions/github-script@v7
       with:
-        name: '*'
-        minCreatedAt: '30 days'
-    
+        script: |
+          const cutoff = new Date();
+          cutoff.setDate(cutoff.getDate() - 30);
+
+          const { owner, repo } = context.repo;
+          let deleted = 0;
+          let skipped = 0;
+          let page = 1;
+          let total = Infinity;
+
+          while ((page - 1) * 100 < total) {
+            const response = await github.rest.actions.listArtifactsForRepo({
+              owner,
+              repo,
+              per_page: 100,
+              page,
+            });
+
+            total = response.data.total_count;
+            for (const artifact of response.data.artifacts) {
+              if (new Date(artifact.created_at) <= cutoff) {
+                await github.rest.actions.deleteArtifact({
+                  owner,
+                  repo,
+                  artifact_id: artifact.id,
+                });
+                core.info(`Deleted artifact "${artifact.name}" (created ${artifact.created_at})`);
+                deleted++;
+              } else {
+                skipped++;
+              }
+            }
+            page++;
+          }
+
+          core.info(`Cleanup finished: ${deleted} artifact(s) deleted, ${skipped} kept (created within the last 30 days).`);
+
     - name: Log cleanup completion
       run: |
         echo "::notice::Artifact cleanup completed - removed artifacts older than 30 days"
